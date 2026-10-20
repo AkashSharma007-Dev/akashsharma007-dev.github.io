@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Godown, a stock control dashboard | Akash Sharma</title>
+<meta name="description" content="Case study: Godown, a concept stock control web app for a wholesale distributor. User flow, wireframes, visual design and a clickable prototype by Akash Sharma.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/site.css">
+<link rel="stylesheet" href="../css/case.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="name" href="../index.html">Akash Sharma</a>
+    <nav aria-label="Main">
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#services">Services</a>
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <a class="btn btn-main" href="../index.html#contact">Start a project</a>
+  </div>
+</header>
+
+<main class="case">
+  <section class="case-hero">
+    <div class="wrap">
+      <a class="crumbs" href="../index.html#work">‹ All work</a>
+      <h1>Godown</h1>
+      <p class="lede">Stock control for a wholesale distributor, built around the question the owner asks every morning: what runs out first?</p>
+      <dl class="meta">
+        <div><dt>Project</dt><dd>Concept web app</dd></div>
+        <div><dt>Platform</dt><dd>Desktop browser</dd></div>
+        <div><dt>My part</dt><dd>Flow, wireframes, visual design, prototype</dd></div>
+        <div><dt>Screens</dt><dd>4</dd></div>
+      </dl>
+      <div class="cta">
+        <a class="btn btn-main" href="../demos/godown/" target="_blank" rel="noopener">Open the prototype</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="window"><div class="bar"><i></i><i></i><i></i><span>Godown, overview</span></div><img src="../img/godown/s0.jpg" alt="Godown overview with stock value, a reorder list and deliveries this week" width="1440" height="900"></div>
+  </div>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>The problem</h2>
+      <div class="text">
+        <p>The client in this concept is Mehta Distributors, a grocery wholesaler in Jaipur with one godown and about 400 products. Stock lives in the billing software and an Excel sheet.</p>
+        <p>Billing software reports how many cartons are left. The owner still has to work out how long that lasts, and whether more is already on order. Run out of a fast seller and shops buy from the next wholesaler. Order too much and cash sits in cartons for months.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>Who it's for</h2>
+      <div class="text">
+        <p>Two people use it, on a desktop at the office counter. These are my assumptions for the concept, not findings from research.</p>
+        <ul>
+          <li><b>The owner</b> decides what to buy and watches the cash tied up in stock.</li>
+          <li><b>The godown manager</b> receives deliveries and sends the oldest batches out first.</li>
+        </ul>
+        <p>Sales and stock come in from the billing software, so nobody types numbers twice.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>The flow</h2>
+      <div class="text">
+        <ol class="flow">
+          <li><span>Overview</span></li>
+          <li><span>Reorder now</span></li>
+          <li><span>Product detail</span></li>
+          <li><span>New purchase order</span></li>
+          <li><span>Send on WhatsApp</span></li>
+        </ol>
+        <p class="note" style="margin-top:16px">A second route: Products, filter by "Below reorder level", tick several products from one supplier, then create one purchase order for all of them.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>Wireframes</h2>
+      <div class="text">
+        <p>The layout was settled in grey first: a fixed sidebar, a summary row, and the reorder list given the most space because it is where the day's work starts.</p>
+      </div>
+      <div class="gallery wide full">
+        <figure><img src="../img/godown/w0.jpg" alt="Wireframe of the overview" loading="lazy" width="1440" height="900"><figcaption>Overview</figcaption></figure>
+        <figure><img src="../img/godown/w1.jpg" alt="Wireframe of the products list" loading="lazy" width="1440" height="900"><figcaption>Products</figcaption></figure>
+        <figure><img src="../img/godown/w2.jpg" alt="Wireframe of the product detail page" loading="lazy" width="1440" height="900"><figcaption>Product detail</figcaption></figure>
+        <figure><img src="../img/godown/w3.jpg" alt="Wireframe of the purchase order form" loading="lazy" width="1440" height="900"><figcaption>New purchase order</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>Design decisions</h2>
+      <ol class="decisions full">
+        <li class="wide">
+          <div><h3>Days, not cartons</h3><p>Every product shows how many days its stock will last, from current stock and the average daily sales. Fourteen cartons of mustard oil and 120 cartons of biscuits can now be compared at a glance: three days against eighteen.</p></div>
+          <div class="crop"><img src="../img/godown/d-days.jpg" alt="Products table with a Lasts column showing days" loading="lazy" width="1144" height="374"></div>
+        </li>
+        <li class="wide">
+          <div><h3>Show what is already on order</h3><p>The reorder list puts "On order" next to "Lasts". Products with a delivery coming need no action, so only rows marked "Nothing" get an Order button. A late delivery shows in red with a button to call the supplier.</p></div>
+          <div class="crop"><img src="../img/godown/d-onorder.jpg" alt="Reorder list with an On order column" loading="lazy" width="764" height="378"></div>
+        </li>
+        <li class="wide">
+          <div><h3>One purchase order from many products</h3><p>Ticking several low products from the same supplier opens one order with every line filled in. The suggested quantities come with their rule in plain words: enough for about three weeks after delivery, based on the last eight weeks.</p></div>
+          <div class="crop"><img src="../img/godown/d-po.jpg" alt="Purchase order with suggested quantities and GST" loading="lazy" width="784" height="422"></div>
+        </li>
+        <li class="wide">
+          <div><h3>Sent the way suppliers already work</h3><p>Many suppliers take orders on WhatsApp, so the order goes there as a PDF with the GSTIN, delivery address and expected date. Download and draft are still there for everyone else.</p></div>
+          <div class="crop" style="max-width:340px"><img src="../img/godown/d-send.jpg" alt="Order summary with Send on WhatsApp" loading="lazy" width="340" height="454"></div>
+        </li>
+        <li class="wide">
+          <div><h3>Oldest batch goes out first</h3><p>The product page lists batches with their best-before dates and marks the one to pick first. The chart beneath the numbers shows how stock fell and refilled over 90 days against the reorder level.</p></div>
+          <div class="crop"><img src="../img/godown/d-batch.jpg" alt="Product page with a stock chart and batches" loading="lazy" width="1144" height="446"></div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>Final screens</h2>
+      <div class="gallery wide full">
+        <figure><img src="../img/godown/s0.jpg" alt="Overview" loading="lazy" width="1440" height="900"><figcaption>Overview: what runs out first, what is arriving, what expires</figcaption></figure>
+        <figure><img src="../img/godown/s1.jpg" alt="Products" loading="lazy" width="1440" height="900"><figcaption>Products sorted by days left, three selected for one order</figcaption></figure>
+        <figure><img src="../img/godown/s2.jpg" alt="Product detail" loading="lazy" width="1440" height="900"><figcaption>One product: 90 days of stock, suppliers and batches</figcaption></figure>
+        <figure><img src="../img/godown/s3.jpg" alt="New purchase order" loading="lazy" width="1440" height="900"><figcaption>A purchase order ready to send</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>Design system</h2>
+      <div class="text" style="max-width:none">
+        <div class="swatches">
+          <div><i style="--c:#2A221B"></i><span>Godown brown<small>#2A221B</small></span></div>
+          <div><i style="--c:#C99A62"></i><span>Kraft<small>#C99A62</small></span></div>
+          <div><i style="--c:#8A5A2B"></i><span>Action<small>#8A5A2B</small></span></div>
+          <div><i style="--c:#C2362B"></i><span>Out of stock<small>#C2362B</small></span></div>
+          <div><i style="--c:#A86E00"></i><span>Low<small>#A86E00</small></span></div>
+          <div><i style="--c:#2F7D46"></i><span>OK<small>#2F7D46</small></span></div>
+        </div>
+        <div class="typespec">
+          <div><small>Interface</small><span>Instrument Sans with tabular figures, so columns of rupees line up.</span></div>
+          <div><small>Logo</small><span>Stardos Stencil, like the stencilled marks on cartons. Used for the logo only.</span></div>
+          <div><small>Components</small><span>Status pill, days-left bar, data table, bulk action bar, supplier card, order summary.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>What I would test next</h2>
+      <div class="text">
+        <ol>
+          <li>Give an owner five minutes with the overview and ask which three products to order today. Note whether they reach the answer without opening another screen.</li>
+          <li>Check the eight-week average around festivals like Diwali, when sales jump. A seasonal adjustment may be needed.</li>
+          <li>Log how often people change the suggested quantities. Frequent edits would mean the rule needs work.</li>
+          <li>Test on the 1366 by 768 screens common on office laptops.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <div class="next-case">
+    <div class="wrap">
+      <p class="disclaimer">Godown is a concept project. Mehta Distributors, its suppliers, customers and all figures are fictional.</p>
+      <a href="thela.html">Next: Thela checkout ›</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Akash Sharma</span>
+    <span>Gurugram, India</span>
+  </div>
+</footer>
+</body>
+</html>

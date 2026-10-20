@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Godown prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Stardos+Stencil:wght@700&family=Flow+Rounded&display=swap" rel="stylesheet">
+<style>
+  /* Godown: stock control for a wholesale distributor. Everything is measured in days of stock left, not units. */
+  :root {
+    --paper: #F3F3F0;
+    --card: #FFFFFF;
+    --ink: #1F1A16;
+    --soft: #6B645C;
+    --line: #E4E1DB;
+    --side: #2A221B;
+    --kraft: #C99A62;
+    --act: #8A5A2B;
+    --act-tint: #F4EADD;
+    --red: #C2362B;   --red-tint: #FBE6E3;
+    --amber: #A86E00; --amber-tint: #FBF0D4;
+    --green: #2F7D46; --green-tint: #E2F1E6;
+    --font: "Instrument Sans", system-ui, sans-serif;
+  }
+  .wire {
+    --paper: #F4F4F4; --ink: #555; --soft: #999; --line: #D6D6D6; --side: #6B6B6B; --kraft: #DDD;
+    --act: #888; --act-tint: #EAEAEA; --red: #888; --red-tint: #E6E6E6; --amber: #888; --amber-tint: #E6E6E6; --green: #888; --green-tint: #E6E6E6;
+  }
+  .wire .t { font-family: "Flow Rounded", var(--font); color: #BBB; }
+  .wire svg.chart :is(path, circle) { stroke: #AAA !important; fill-opacity: .2; }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.45 var(--font); color: var(--ink); background: #D8D5CF; font-variant-numeric: tabular-nums; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  h1, h2, p { margin: 0; }
+
+  /* presentation shell */
+  .shell { padding: 20px 24px 40px; }
+  .shell nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin: 0 auto 18px; max-width: 1440px; }
+  .shell nav h1 { font-size: 20px; }
+  .shell nav p { color: var(--soft); margin-right: auto; }
+  .shell nav ol { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 4px; }
+  .shell nav button { border: 0; background: transparent; padding: 8px 12px; border-radius: 8px; font-weight: 600; }
+  .shell nav button[aria-current="true"] { background: var(--ink); color: #fff; }
+  .shell nav .back { color: var(--soft); }
+  .stage { width: 1440px; height: 900px; margin: 0 auto; display: grid; grid-template-columns: 232px 1fr; grid-template-rows: 100%; background: var(--paper); box-shadow: 0 30px 70px -30px rgba(40,25,10,.45); border-radius: 12px; overflow: hidden; }
+  body.shot { background: var(--paper); }
+  body.shot .shell { padding: 0; }
+  body.shot nav { display: none; }
+  body.shot .stage { border-radius: 0; box-shadow: none; }
+
+  /* sidebar */
+  .side { background: var(--side); color: #E9E2D9; padding: 22px 14px; display: flex; flex-direction: column; gap: 4px; }
+  .logo { font: 700 26px/1 "Stardos Stencil", var(--font); letter-spacing: .06em; color: var(--kraft); padding: 0 10px; }
+  .biz { padding: 6px 10px 22px; color: #B5AA9C; font-size: 13px; }
+  .biz b { display: block; color: #fff; font-weight: 600; font-size: 14px; }
+  .side button { display: flex; align-items: center; gap: 12px; border: 0; background: none; padding: 10px; border-radius: 8px; text-align: left; color: #D9D0C4; font-weight: 500; }
+  .side button:hover { background: rgba(255,255,255,.06); }
+  .side svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .side .count { margin-left: auto; font-size: 12px; background: var(--red); color: #fff; border-radius: 99px; padding: 0 7px; font-weight: 600; }
+  .stage:has([data-sec="overview"].on) .side [data-sec="overview"],
+  .stage:has([data-sec="products"].on) .side [data-sec="products"],
+  .stage:has([data-sec="po"].on) .side [data-sec="po"] { background: rgba(255,255,255,.1); color: #fff; box-shadow: inset 3px 0 0 var(--kraft); }
+  .side .me { margin-top: auto; display: flex; gap: 10px; align-items: center; padding: 10px; border-top: 1px solid rgba(255,255,255,.1); }
+  .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--kraft); color: var(--side); display: grid; place-items: center; font-weight: 700; flex: none; }
+  .me small { display: block; color: #B5AA9C; }
+
+  /* main column */
+  .main { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; position: relative; }
+  .topbar { height: 64px; flex: none; display: flex; align-items: center; gap: 16px; padding: 0 32px; border-bottom: 1px solid var(--line); background: var(--card); }
+  .search { flex: 0 1 460px; display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px; color: var(--soft); background: var(--paper); }
+  .search kbd { margin-left: auto; font: 600 12px var(--font); border: 1px solid var(--line); border-radius: 4px; padding: 0 6px; background: var(--card); }
+  .where { margin-left: auto; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+  .synced { color: var(--soft); }
+  .screen { display: none; flex: 1; flex-direction: column; gap: 20px; padding: 24px 32px; min-height: 0; overflow: hidden; }
+  .screen.on { display: flex; }
+
+  .head { display: flex; align-items: flex-end; gap: 16px; }
+  .head h1 { font-size: 26px; line-height: 1.15; letter-spacing: -.01em; }
+  .head p { color: var(--soft); margin-top: 4px; }
+  .head .acts { margin-left: auto; display: flex; gap: 10px; }
+  .crumb { color: var(--soft); font-weight: 500; border: 0; background: none; padding: 0; margin-bottom: 6px; }
+  .crumb:hover { color: var(--ink); }
+  .btn { height: 40px; padding: 0 16px; border-radius: 8px; border: 1px solid transparent; background: var(--act); color: #fff; font-weight: 600; white-space: nowrap; }
+  .btn.line { background: var(--card); color: var(--ink); border-color: var(--line); }
+  .btn.small { height: 32px; padding: 0 12px; font-size: 13px; }
+
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+  .panel > h2, .panel > header { font-size: 15px; padding: 16px 20px 0; }
+  .panel > header { display: flex; align-items: baseline; gap: 12px; }
+  .panel > header h2 { font-size: 15px; }
+  .panel > header .link { margin-left: auto; border: 0; background: none; color: var(--act); font-weight: 600; padding: 0; }
+  .muted { color: var(--soft); }
+
+  /* status */
+  .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+  .pill.out { background: var(--red-tint); color: var(--red); }
+  .pill.low { background: var(--amber-tint); color: var(--amber); }
+  .pill.ok { background: var(--green-tint); color: var(--green); }
+  .pill.over { background: var(--act-tint); color: var(--act); }
+  .days { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+  .days i { display: block; width: 90px; height: 6px; border-radius: 3px; background: var(--paper); position: relative; overflow: hidden; }
+  .days i::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--w); background: var(--c, var(--green)); border-radius: 3px; }
+  .days.out { color: var(--red); font-weight: 600; } .days.out i { --c: var(--red); }
+  .days.low { color: var(--amber); font-weight: 600; } .days.low i { --c: var(--amber); }
+  .sku { font-size: 12px; color: var(--soft); letter-spacing: .02em; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 12px; font-weight: 600; color: var(--soft); padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 0 12px; height: 52px; border-bottom: 1px solid var(--line); }
+  tr:last-child td { border-bottom: 0; }
+  th:first-child, td:first-child { padding-left: 20px; }
+  th:last-child, td:last-child { padding-right: 20px; }
+  .r { text-align: right; }
+  tbody tr[data-go] { cursor: pointer; }
+  tbody tr[data-go]:hover { background: var(--paper); }
+  td b { font-weight: 600; }
+
+  /* S1 overview */
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .kpis > div { padding: 14px 20px; }
+  .kpis > div + div { border-left: 1px solid var(--line); }
+  .kpis small { display: block; color: var(--soft); font-weight: 500; }
+  .kpis strong { display: block; font-size: 28px; line-height: 1.2; margin: 4px 0 2px; letter-spacing: -.01em; }
+  .kpis .bad { color: var(--red); }
+  .ov { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 360px; gap: 20px; }
+  .ov .left { display: grid; grid-template-rows: auto 1fr; gap: 20px; min-height: 0; }
+  .ov .right { display: grid; grid-template-rows: auto 1fr; gap: 20px; }
+  .onorder { font-size: 13px; white-space: nowrap; }
+  .ov td { height: 50px; }
+  .ov td b { white-space: nowrap; }
+  .ov .days i { width: 56px; }
+  .onorder.late { color: var(--red); font-weight: 600; }
+  .list { list-style: none; margin: 0; padding: 8px 20px 12px; }
+  .list li { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .list li:last-child { border-bottom: 0; }
+  .list .when { width: 46px; flex: none; text-align: center; border: 1px solid var(--line); border-radius: 8px; padding: 4px 0; font-size: 11px; font-weight: 600; color: var(--soft); line-height: 1.2; }
+  .list .when b { display: block; font-size: 17px; color: var(--ink); }
+  .list .when.late { border-color: var(--red); color: var(--red); }
+  .list .when.late b { color: var(--red); }
+  .list div { flex: 1; }
+  .list small { display: block; color: var(--soft); }
+  .list .amt { flex: none; font-weight: 600; text-align: right; }
+  .cats { padding: 12px 20px 16px; display: grid; gap: 10px; }
+  .cats div { display: grid; grid-template-columns: 96px 1fr 80px; align-items: center; gap: 12px; }
+  .cats span:last-child { text-align: right; font-weight: 600; }
+  .cats i { display: block; height: 10px; border-radius: 3px; background: var(--kraft); width: var(--w); }
+
+  /* S2 products */
+  .chips { display: flex; gap: 8px; align-items: center; }
+  .chips button { border: 1px solid var(--line); background: var(--card); border-radius: 99px; padding: 6px 14px; font-weight: 500; }
+  .chips button b { margin-left: 6px; color: var(--soft); font-weight: 600; }
+  .chips button[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .chips button[aria-pressed="true"] b { color: #CFC6BA; }
+  .chips .sort { margin-left: auto; color: var(--soft); }
+  .prod td { height: 46px; }
+  .prod tr.sel { background: var(--act-tint); }
+  .box { width: 18px; height: 18px; border: 1.5px solid #B9B2A8; border-radius: 4px; display: grid; place-items: center; background: var(--card); }
+  .sel .box { background: var(--act); border-color: var(--act); }
+  .sel .box::after { content: ""; width: 9px; height: 5px; border: 2px solid #fff; border-top: 0; border-right: 0; transform: rotate(-45deg) translate(1px, -1px); }
+  .bulk { position: absolute; left: 50%; bottom: 24px; transform: translateX(-50%); display: flex; align-items: center; gap: 16px; background: var(--side); color: #fff; padding: 10px 10px 10px 20px; border-radius: 12px; box-shadow: 0 16px 40px -12px rgba(30,20,10,.5); white-space: nowrap; }
+  .bulk span { color: #CFC6BA; }
+  .bulk .btn.line { background: transparent; color: #fff; border-color: rgba(255,255,255,.25); }
+  .bulk .btn:not(.line) { background: var(--kraft); color: var(--side); }
+
+  /* S3 product detail */
+  .tags { display: flex; gap: 8px; margin-top: 8px; align-items: center; }
+  .tag { font-size: 12px; font-weight: 600; border: 1px solid var(--line); background: var(--card); border-radius: 6px; padding: 2px 8px; color: var(--soft); }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .stats > div { padding: 16px 20px; }
+  .stats > div + div { border-left: 1px solid var(--line); }
+  .stats small { color: var(--soft); display: block; }
+  .stats strong { font-size: 24px; display: block; margin-top: 2px; }
+  .stats strong span { font-size: 14px; font-weight: 500; color: var(--soft); }
+  .det { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 400px; gap: 20px; }
+  .det .left, .det .right { display: grid; gap: 20px; align-content: start; }
+  .chartwrap { padding: 8px 20px 16px; }
+  .chartwrap svg { display: block; width: 100%; height: auto; }
+  .legend { display: flex; gap: 18px; color: var(--soft); font-size: 12px; margin-left: auto; }
+  .legend i { display: inline-block; width: 14px; height: 0; border-top: 2px solid var(--act); vertical-align: middle; margin-right: 6px; }
+  .legend i.dash { border-top: 2px dashed var(--red); }
+  .move td { height: 40px; }
+  .plus { color: var(--green); font-weight: 600; }
+  .sup { padding: 12px 20px 16px; display: grid; gap: 10px; }
+  .sup > div { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; }
+  .sup > div.best { border-color: var(--act); box-shadow: inset 0 0 0 1px var(--act); }
+  .sup small { color: var(--soft); }
+  .sup .price { font-weight: 700; text-align: right; }
+  .batch { padding: 6px 20px 14px; }
+  .batch > div { display: grid; grid-template-columns: 1fr auto; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .batch > div:last-child { border-bottom: 0; }
+  .batch small { color: var(--soft); }
+  .first { font-size: 11px; font-weight: 700; color: var(--act); background: var(--act-tint); border-radius: 4px; padding: 1px 6px; margin-left: 6px; }
+
+  /* S4 purchase order */
+  .po { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start; }
+  .fields { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 18px 20px 20px; }
+  .field small { display: block; color: var(--soft); font-weight: 500; margin-bottom: 6px; }
+  .input { height: 40px; border: 1px solid var(--line); border-radius: 8px; display: flex; align-items: center; padding: 0 12px; gap: 8px; background: var(--card); white-space: nowrap; overflow: hidden; }
+  .input.sel::after { content: ""; margin-left: auto; width: 7px; height: 7px; border: solid var(--soft); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg) translateY(-2px); }
+  .lines td { height: 60px; }
+  .qty { width: 84px; height: 36px; border: 1.5px solid var(--act); border-radius: 8px; display: inline-flex; align-items: center; justify-content: flex-end; padding: 0 10px; font-weight: 600; background: var(--card); }
+  .sugg { font-size: 12px; color: var(--soft); display: block; }
+  .addline td { height: 52px; color: var(--act); font-weight: 600; }
+  .note { padding: 14px 20px; border-top: 1px solid var(--line); color: var(--soft); display: flex; gap: 10px; align-items: center; }
+  .note svg { width: 18px; height: 18px; flex: none; fill: none; stroke: var(--act); stroke-width: 1.8; }
+  .sum { padding: 18px 20px 20px; display: grid; gap: 10px; }
+  .sum h2 { font-size: 15px; padding: 0; }
+  .sum dl { margin: 0; display: grid; gap: 8px; }
+  .sum dl div { display: flex; justify-content: space-between; }
+  .sum dt { color: var(--soft); }
+  .sum dd { margin: 0; font-weight: 600; }
+  .sum .total { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 4px; font-size: 18px; }
+  .sum .total dt { color: var(--ink); font-weight: 600; }
+  .sum .btn { width: 100%; height: 44px; }
+  .sum p { font-size: 13px; color: var(--soft); }
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav>
+    <h1>Godown</h1>
+    <p>Stock control for a wholesale distributor. Clickable prototype, 4 screens. A concept project: all names and figures are fictional.</p>
+    <ol id="list"></ol>
+    <a class="back" href="../../work/godown.html">Read the case study</a>
+  </nav>
+
+  <div class="stage" id="stage">
+    <aside class="side">
+      <div class="logo">GODOWN</div>
+      <div class="biz"><b>Mehta Distributors</b>Sitapura, Jaipur</div>
+      <button type="button" data-go="0" data-sec="overview"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Overview</button>
+      <button type="button" data-go="1" data-sec="products"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></svg>Products<span class="count">23</span></button>
+      <button type="button" data-go="3" data-sec="po"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/></svg>Purchase orders</button>
+      <button type="button"><svg viewBox="0 0 24 24"><path d="M2 6h12v10H2zM14 10h4l3 3v3h-7"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>Suppliers</button>
+      <button type="button"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>Sales</button>
+      <button type="button"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Reports</button>
+      <div class="me"><span class="avatar">RM</span><div>Rakesh Mehta<small>Owner</small></div></div>
+    </aside>
+
+    <div class="main">
+      <div class="topbar">
+        <div class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span class="t">Search 412 products by name or SKU</span><kbd>/</kbd></div>
+        <div class="where"><span class="dot"></span>Sitapura godown</div>
+        <span class="synced t">Matched with billing at 6:40 pm</span>
+      </div>
+
+      <!-- S1 Overview -->
+      <section class="screen" data-name="Overview" data-sec="overview">
+        <div class="head">
+          <div><h1>Overview</h1><p class="t">Tuesday, 20 October</p></div>
+          <div class="acts"><button class="btn line" type="button">Download stock report</button><button class="btn" type="button" data-go="3">New purchase order</button></div>
+        </div>
+        <div class="panel kpis">
+          <div><small>Stock value</small><strong>₹18.4 lakh</strong><span class="t muted">Across 412 products</span></div>
+          <div><small>Below reorder level</small><strong>23</strong><span class="t bad">6 are out of stock</span></div>
+          <div><small>Open purchase orders</small><strong>4</strong><span class="t muted">₹1.9 lakh, one is late</span></div>
+          <div><small>Sales, last 7 days</small><strong>₹6.2 lakh</strong><span class="t muted">8% more than the week before</span></div>
+        </div>
+        <div class="ov">
+          <div class="left">
+            <div class="panel">
+              <header><h2>Reorder now</h2><span class="muted t">The 6 most urgent of 23</span><button class="link" type="button" data-go="1">See all 23</button></header>
+              <table>
+                <thead><tr><th>Product</th><th class="r">In stock</th><th class="r">Sells a day</th><th>Lasts</th><th>On order</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td><b>Basmati rice 5 kg</b><div class="sku">RIC-BAS-5K</div></td><td class="r">0</td><td class="r">2.1</td><td><span class="days out"><i style="--w:0"></i>Out</span></td><td class="onorder">25, arriving Wed</td><td></td></tr>
+                  <tr><td><b>Poha 500 g</b><div class="sku">STP-POH-500</div></td><td class="r">0</td><td class="r">1.2</td><td><span class="days out"><i style="--w:0"></i>Out</span></td><td class="onorder">13, arriving Wed</td><td></td></tr>
+                  <tr><td><b>Sugar 1 kg</b><div class="sku">STP-SUG-1K</div></td><td class="r">9</td><td class="r">3.5</td><td><span class="days low"><i style="--w:7%"></i>2 days</span></td><td class="onorder late">30, 2 days late</td><td class="r"><button class="btn line small" type="button">Call supplier</button></td></tr>
+                  <tr data-go="2"><td><b>Kachi ghani mustard oil 1 L</b><div class="sku">OIL-MUS-1L</div></td><td class="r">14</td><td class="r">4.2</td><td><span class="days low"><i style="--w:10%"></i>3 days</span></td><td class="onorder muted">Nothing</td><td class="r"><button class="btn small" type="button" data-go="3">Order</button></td></tr>
+                  <tr><td><b>Assam tea 250 g</b><div class="sku">BEV-TEA-250</div></td><td class="r">6</td><td class="r">1.4</td><td><span class="days low"><i style="--w:14%"></i>4 days</span></td><td class="onorder">12, arriving Fri</td><td></td></tr>
+                  <tr><td><b>Mustard oil 5 L jar</b><div class="sku">OIL-MUS-5L</div></td><td class="r">12</td><td class="r">2.4</td><td><span class="days low"><i style="--w:17%"></i>5 days</span></td><td class="onorder muted">Nothing</td><td class="r"><button class="btn small" type="button" data-go="3">Order</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="panel">
+              <header><h2>Stock value by category</h2></header>
+              <div class="cats">
+                <div><span>Staples</span><i style="--w:100%"></i><span>₹6.9 lakh</span></div>
+                <div><span>Home care</span><i style="--w:67%"></i><span>₹4.6 lakh</span></div>
+                <div><span>Oils</span><i style="--w:59%"></i><span>₹4.1 lakh</span></div>
+                <div><span>Snacks</span><i style="--w:23%"></i><span>₹1.6 lakh</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="right">
+            <div class="panel">
+              <header><h2>Deliveries this week</h2></header>
+              <ul class="list">
+                <li><span class="when late">SUN<b>18</b></span><div><b>Bansal Sugar Agency</b><small class="t">PO-1036, 30 cartons. 2 days late.</small></div><span class="amt">₹40,500</span></li>
+                <li><span class="when">WED<b>21</b></span><div><b>Agarwal Traders</b><small class="t">PO-1042, 38 cartons</small></div><span class="amt">₹74,105</span></li>
+                <li><span class="when">FRI<b>23</b></span><div><b>Kumar Tea House</b><small class="t">PO-1039, 12 cartons</small></div><span class="amt">₹62,400</span></li>
+              </ul>
+            </div>
+            <div class="panel">
+              <header><h2>Expiring within 60 days</h2></header>
+              <ul class="list">
+                <li><span class="when">NOV<b>18</b></span><div><b>Roasted vermicelli 400 g</b><small class="t">Batch B-2097, 5 cartons</small></div><span class="amt">₹3,150</span></li>
+                <li><span class="when">DEC<b>2</b></span><div><b>Glucose biscuits 70 g</b><small class="t">Batch B-2140, 8 cartons</small></div><span class="amt">₹3,840</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- S2 Products -->
+      <section class="screen" data-name="Products" data-sec="products">
+        <div class="head">
+          <div><h1>Products</h1><p class="t">412 products in the Sitapura godown</p></div>
+          <div class="acts"><button class="btn line" type="button">Import from Excel</button><button class="btn" type="button">Add product</button></div>
+        </div>
+        <div class="chips">
+          <button type="button" aria-pressed="true">All<b>412</b></button>
+          <button type="button" aria-pressed="false">Below reorder level<b>23</b></button>
+          <button type="button" aria-pressed="false">Out of stock<b>6</b></button>
+          <button type="button" aria-pressed="false">Overstock<b>11</b></button>
+          <button type="button" aria-pressed="false">Expiring soon<b>2</b></button>
+          <span class="sort">Sorted by days left, lowest first</span>
+        </div>
+        <div class="panel">
+          <table class="prod">
+            <thead><tr><th style="width:44px"><span class="box"></span></th><th>Product</th><th>Category</th><th class="r">In stock</th><th class="r">Reorder at</th><th>Lasts</th><th class="r">Stock value</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><span class="box"></span></td><td><b>Basmati rice 5 kg</b> <span class="sku">RIC-BAS-5K</span></td><td>Staples</td><td class="r">0</td><td class="r">40</td><td><span class="days out"><i style="--w:0"></i>Out</span></td><td class="r">₹0</td><td><span class="pill out">Out of stock</span></td></tr>
+              <tr><td><span class="box"></span></td><td><b>Poha 500 g</b> <span class="sku">STP-POH-500</span></td><td>Staples</td><td class="r">0</td><td class="r">25</td><td><span class="days out"><i style="--w:0"></i>Out</span></td><td class="r">₹0</td><td><span class="pill out">Out of stock</span></td></tr>
+              <tr><td><span class="box"></span></td><td><b>Sugar 1 kg</b> <span class="sku">STP-SUG-1K</span></td><td>Staples</td><td class="r">9</td><td class="r">30</td><td><span class="days low"><i style="--w:7%"></i>2 days</span></td><td class="r">₹12,150</td><td><span class="pill low">Low</span></td></tr>
+              <tr class="sel" data-go="2"><td><span class="box"></span></td><td><b>Kachi ghani mustard oil 1 L</b> <span class="sku">OIL-MUS-1L</span></td><td>Oils</td><td class="r">14</td><td class="r">30</td><td><span class="days low"><i style="--w:10%"></i>3 days</span></td><td class="r">₹26,040</td><td><span class="pill low">Low</span></td></tr>
+              <tr><td><span class="box"></span></td><td><b>Assam tea 250 g</b> <span class="sku">BEV-TEA-250</span></td><td>Beverages</td><td class="r">6</td><td class="r">15</td><td><span class="days low"><i style="--w:14%"></i>4 days</span></td><td class="r">₹31,200</td><td><span class="pill low">Low</span></td></tr>
+              <tr class="sel"><td><span class="box"></span></td><td><b>Mustard oil 5 L jar</b> <span class="sku">OIL-MUS-5L</span></td><td>Oils</td><td class="r">12</td><td class="r">15</td><td><span class="days low"><i style="--w:17%"></i>5 days</span></td><td class="r">₹35,400</td><td><span class="pill low">Low</span></td></tr>
+              <tr class="sel"><td><span class="box"></span></td><td><b>Refined soybean oil 1 L</b> <span class="sku">OIL-SOY-1L</span></td><td>Oils</td><td class="r">22</td><td class="r">30</td><td><span class="days low"><i style="--w:24%"></i>7 days</span></td><td class="r">₹33,440</td><td><span class="pill low">Low</span></td></tr>
+              <tr><td><span class="box"></span></td><td><b>Toor dal 1 kg</b> <span class="sku">STP-TUR-1K</span></td><td>Staples</td><td class="r">26</td><td class="r">15</td><td><span class="days"><i style="--w:37%"></i>11 days</span></td><td class="r">₹1,09,200</td><td><span class="pill ok">OK</span></td></tr>
+              <tr><td><span class="box"></span></td><td><b>Glucose biscuits 70 g</b> <span class="sku">SNK-BIS-070</span></td><td>Snacks</td><td class="r">120</td><td class="r">40</td><td><span class="days"><i style="--w:60%"></i>18 days</span></td><td class="r">₹57,600</td><td><span class="pill ok">OK</span></td></tr>
+              <tr><td><span class="box"></span></td><td><b>Groundnut oil 1 L</b> <span class="sku">OIL-GNT-1L</span></td><td>Oils</td><td class="r">18</td><td class="r">10</td><td><span class="days"><i style="--w:80%"></i>24 days</span></td><td class="r">₹41,040</td><td><span class="pill ok">OK</span></td></tr>
+              <tr><td><span class="box"></span></td><td><b>Iodised salt 1 kg</b> <span class="sku">STP-SAL-1K</span></td><td>Staples</td><td class="r">64</td><td class="r">20</td><td><span class="days"><i style="--w:100%"></i>30 days</span></td><td class="r">₹32,000</td><td><span class="pill ok">OK</span></td></tr>
+              <tr><td><span class="box"></span></td><td><b>Washing powder 1 kg</b> <span class="sku">HOM-DET-1K</span></td><td>Home care</td><td class="r">210</td><td class="r">30</td><td><span class="days"><i style="--w:100%;--c:var(--act)"></i>96 days</span></td><td class="r">₹3,99,000</td><td><span class="pill over">Overstock</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="bulk"><b>3 selected</b><span>All from Shree Ganesh Oils</span><button class="btn line small" type="button">Clear</button><button class="btn small" type="button" data-go="3">Create purchase order</button></div>
+      </section>
+
+      <!-- S3 Product detail -->
+      <section class="screen" data-name="Product detail" data-sec="products">
+        <div class="head">
+          <div>
+            <button class="crumb" type="button" data-go="1">‹ Products</button>
+            <h1>Kachi ghani mustard oil 1 L</h1>
+            <div class="tags"><span class="tag">OIL-MUS-1L</span><span class="tag">Carton of 12 bottles</span><span class="tag">Oils</span><span class="pill low">Low</span></div>
+          </div>
+          <div class="acts"><button class="btn line" type="button">Edit product</button><button class="btn" type="button" data-go="3">Reorder 75 cartons</button></div>
+        </div>
+        <div class="panel stats">
+          <div><small>In stock</small><strong>14 <span>cartons</span></strong></div>
+          <div><small>Sells</small><strong>4.2 <span>cartons a day</span></strong></div>
+          <div><small>Lasts</small><strong style="color:var(--amber)">3 <span>days</span></strong></div>
+          <div><small>Reorder level</small><strong>30 <span>cartons</span></strong></div>
+        </div>
+        <div class="det">
+          <div class="left">
+            <div class="panel">
+              <header><h2>Stock, last 90 days</h2><span class="legend"><span><i></i>Cartons in stock</span><span><i class="dash"></i>Reorder level</span></span></header>
+              <div class="chartwrap">
+                <svg class="chart" viewBox="0 0 640 240" aria-label="Stock falls from 70 to 22 cartons, refills to 92 on 20 August, falls to 28, refills to 84 on 21 September, and is at 14 today. The reorder level is 30.">
+                  <g stroke="var(--line)" stroke-width="1"><path d="M40 20H640M40 70H640M40 120H640M40 170H640"/></g>
+                  <g font-size="11" fill="var(--soft)" font-family="var(--font)"><text x="0" y="24">100</text><text x="6" y="74">75</text><text x="6" y="124">50</text><text x="6" y="174">25</text><text x="40" y="236">22 Jul</text><text x="216" y="236">20 Aug</text><text x="430" y="236">21 Sep</text><text x="596" y="236">Today</text></g>
+                  <path d="M40 160H640" stroke="var(--red)" stroke-width="1.5" stroke-dasharray="6 5" fill="none"/>
+                  <path d="M40 80 L233 176 L233 36 L447 164 L447 52 L640 192 L640 220 L40 220Z" fill="var(--act)" fill-opacity=".1" stroke="none"/>
+                  <path d="M40 80 L233 176 L233 36 L447 164 L447 52 L640 192" fill="none" stroke="var(--act)" stroke-width="2.5" stroke-linejoin="round"/>
+                  <circle cx="640" cy="192" r="5" fill="var(--act)"/>
+                </svg>
+              </div>
+            </div>
+            <div class="panel">
+              <header><h2>Recent movements</h2></header>
+              <table class="move">
+                <tbody>
+                  <tr><td class="muted">20 Oct</td><td>Sold</td><td class="muted t">Bill 3381, Saini Kirana Store</td><td class="r">−5</td></tr>
+                  <tr><td class="muted">19 Oct</td><td>Sold</td><td class="muted t">Bill 3364, Jain General Store</td><td class="r">−4</td></tr>
+                  <tr><td class="muted">18 Oct</td><td>Returned</td><td class="muted t">Bill 3310, one carton damaged in transit</td><td class="r plus">+1</td></tr>
+                  <tr><td class="muted">18 Oct</td><td>Sold</td><td class="muted t">Bill 3342, Shiv Provision Store</td><td class="r">−6</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="right">
+            <div class="panel">
+              <header><h2>Suppliers</h2></header>
+              <div class="sup">
+                <div class="best"><b>Shree Ganesh Oils</b><span class="price">₹1,860</span><small class="t">Sanganer. Delivers in 3 days, on time 11 of 12 orders.</small><small>per carton</small></div>
+                <div><b>Agarwal Traders</b><span class="price">₹1,905</span><small class="t">Chandpole. Delivers in 2 days, on time 7 of 7 orders.</small><small>per carton</small></div>
+              </div>
+            </div>
+            <div class="panel">
+              <header><h2>Batches in the godown</h2><span class="muted">Oldest goes out first</span></header>
+              <div class="batch">
+                <div><span><b>B-2264</b><span class="first">Pick first</span><br><small class="t">Received 20 Aug, best before May 2027</small></span><b>6 cartons</b></div>
+                <div><span><b>B-2291</b><br><small class="t">Received 21 Sep, best before June 2027</small></span><b>8 cartons</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- S4 Create purchase order -->
+      <section class="screen" data-name="New purchase order" data-sec="po">
+        <div class="head">
+          <div>
+            <button class="crumb" type="button" data-go="1">‹ Products</button>
+            <h1>New purchase order</h1>
+            <div class="tags"><span class="tag">PO-1045</span><span class="pill over">Draft</span></div>
+          </div>
+        </div>
+        <div class="po">
+          <div class="panel">
+            <div class="fields">
+              <label class="field"><small>Supplier</small><span class="input sel">Shree Ganesh Oils, Sanganer</span></label>
+              <label class="field"><small>Deliver to</small><span class="input sel">Sitapura godown</span></label>
+              <label class="field"><small>Expected by</small><span class="input">Fri, 23 October</span></label>
+              <label class="field"><small>Payment</small><span class="input sel">15 days credit</span></label>
+            </div>
+            <table class="lines">
+              <thead><tr><th>Product</th><th class="r">In stock</th><th class="r">Quantity</th><th class="r">Rate</th><th class="r">GST</th><th class="r">Amount</th></tr></thead>
+              <tbody>
+                <tr><td><b>Kachi ghani mustard oil 1 L</b><div class="sku">OIL-MUS-1L, carton of 12</div></td><td class="r">14</td><td class="r"><span class="qty">75</span><span class="sugg t">Suggested 75</span></td><td class="r">₹1,860</td><td class="r">5%</td><td class="r"><b>₹1,39,500</b></td></tr>
+                <tr><td><b>Refined soybean oil 1 L</b><div class="sku">OIL-SOY-1L, carton of 12</div></td><td class="r">22</td><td class="r"><span class="qty">40</span><span class="sugg t">Suggested 40</span></td><td class="r">₹1,520</td><td class="r">5%</td><td class="r"><b>₹60,800</b></td></tr>
+                <tr><td><b>Mustard oil 5 L jar</b><div class="sku">OIL-MUS-5L, carton of 4</div></td><td class="r">12</td><td class="r"><span class="qty">40</span><span class="sugg t">Suggested 40</span></td><td class="r">₹2,950</td><td class="r">5%</td><td class="r"><b>₹1,18,000</b></td></tr>
+                <tr class="addline"><td colspan="6">+ Add a product from Shree Ganesh Oils</td></tr>
+              </tbody>
+            </table>
+            <div class="note"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><span class="t">Suggested quantities cover about three weeks of sales after delivery, based on the last eight weeks.</span></div>
+          </div>
+          <div class="panel sum">
+            <h2>Summary</h2>
+            <dl>
+              <div><dt>Products</dt><dd>3</dd></div>
+              <div><dt>Cartons</dt><dd>155</dd></div>
+              <div><dt>Subtotal</dt><dd>₹3,18,300</dd></div>
+              <div><dt>GST at 5%</dt><dd>₹15,915</dd></div>
+              <div class="total"><dt>Total</dt><dd>₹3,34,215</dd></div>
+            </dl>
+            <button class="btn" type="button">Send on WhatsApp</button>
+            <button class="btn line" type="button">Download PDF</button>
+            <button class="btn line" type="button">Save as draft</button>
+            <p class="t">The supplier gets a PDF with your GSTIN, the delivery address and the expected date.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+<script src="../proto.js"></script>
+<script>
+  // Scale the 1440 px frame down to fit narrower windows. Screenshots use the real size.
+  if (!document.body.classList.contains('shot')) {
+    const stage = document.getElementById('stage');
+    const fit = () => stage.style.zoom = Math.min(1, (innerWidth - 48) / 1440);
+    fit(); addEventListener('resize', fit);
+  }
+</script>
+</body>
+</html>

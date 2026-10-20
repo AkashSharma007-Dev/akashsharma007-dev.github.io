@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kona Studio, Interiors, Mumbai</title>
+<meta name="description" content="Kona is an interior design studio in Bandra West, Mumbai. Full-home design and execution, design-only packages and modular kitchens.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Italiana&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Layout: asymmetric editorial grid. Big type left, tall photo right; projects stagger; materials as real swatches. */
+  :root {
+    --stone: #ECEAE5;
+    --paper: #F6F5F2;
+    --ink: #1D1D1B;
+    --teak: #7A4A2E;
+    --sage: #8F9A84;
+    --brass: #B8933A;
+    --line: #CFCBC2;
+    --muted: #64625C;
+    --display: "Italiana", "Didot", Georgia, serif;
+    --sans: "Jost", "Futura", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--stone); color: var(--ink); font: 17px/1.65 var(--sans); }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--teak); outline-offset: 3px; }
+  .wrap { width: min(1240px, 100% - 40px); margin-inline: auto; }
+
+  header .wrap { display: flex; align-items: baseline; gap: 32px; padding: 26px 0; border-bottom: 1px solid var(--line); }
+  .word { font-family: var(--display); font-size: 40px; line-height: 1; text-decoration: none; }
+  .where { font-size: 14px; color: var(--muted); }
+  header nav { margin-left: auto; display: flex; gap: 28px; font-size: 15px; }
+  header nav a { text-decoration: none; }
+  header nav a:hover { color: var(--teak); }
+  @media (max-width: 760px) { header nav { display: none; } }
+
+  /* hero */
+  .hero { padding: 56px 0 90px; }
+  .hero .wrap { display: grid; grid-template-columns: 7fr 5fr; gap: 48px; align-items: end; }
+  .hero h1 { font-family: var(--display); font-weight: 400; font-size: clamp(54px, 8vw, 118px); line-height: .96; letter-spacing: -.01em; margin: 0 0 36px; }
+  .hero p { max-width: 30em; color: var(--muted); font-size: 19px; margin: 0 0 30px; }
+  .btn { display: inline-block; font: 500 15px/1 var(--sans); letter-spacing: .03em; padding: 17px 26px; text-decoration: none; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); cursor: pointer; }
+  .cta { display: flex; flex-wrap: wrap; gap: 10px; }
+  .btn:hover { background: var(--teak); border-color: var(--teak); }
+  .btn.ghost { background: transparent; color: var(--ink); }
+  .btn.ghost:hover { background: var(--ink); color: var(--paper); }
+  .hero figure { margin: 0; }
+  .hero figure img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+  figcaption { font-size: 14px; color: var(--muted); padding-top: 12px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  @media (max-width: 860px) { .hero .wrap { grid-template-columns: 1fr; } }
+
+  .corner { background: var(--paper); padding: 90px 0; }
+  .corner .wrap { display: grid; grid-template-columns: 1fr 2fr; gap: 48px; }
+  .corner h2 { font-family: var(--display); font-weight: 400; font-size: 40px; line-height: 1.05; margin: 0; }
+  .corner p { font-size: 22px; line-height: 1.55; margin: 0; max-width: 34em; }
+  @media (max-width: 760px) { .corner .wrap { grid-template-columns: 1fr; gap: 18px; } }
+
+  section { padding: 100px 0; }
+  .title { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px 40px; margin-bottom: 48px; }
+  .title h2 { font-family: var(--display); font-weight: 400; font-size: clamp(42px, 6vw, 76px); line-height: 1; margin: 0; }
+  .title p { margin: 0; color: var(--muted); max-width: 28em; }
+
+  /* projects */
+  .projects { display: grid; grid-template-columns: repeat(12, 1fr); gap: 64px 28px; }
+  .proj img { width: 100%; object-fit: cover; }
+  .proj h3 { font-family: var(--display); font-weight: 400; font-size: 30px; margin: 18px 0 8px; }
+  .proj dl { display: flex; flex-wrap: wrap; gap: 6px 28px; margin: 0; font-size: 14px; }
+  .proj dt { color: var(--muted); }
+  .proj dd { margin: 0; font-weight: 500; }
+  .proj dl div { display: flex; gap: 6px; }
+  .p1 { grid-column: 1 / 8; } .p1 img { aspect-ratio: 4 / 3; }
+  .p2 { grid-column: 9 / 13; margin-top: 140px; } .p2 img { aspect-ratio: 3 / 4; }
+  .p3 { grid-column: 2 / 6; } .p3 img { aspect-ratio: 3 / 4; }
+  .p4 { grid-column: 7 / 13; margin-top: 90px; } .p4 img { aspect-ratio: 4 / 3; }
+  @media (max-width: 860px) { .projects { grid-template-columns: 1fr; gap: 48px; } .proj { grid-column: 1 / -1 !important; margin-top: 0 !important; } .proj img { aspect-ratio: 4 / 3 !important; } }
+
+  /* services */
+  .services { background: var(--ink); color: var(--paper); }
+  .services .title p { color: #A9A69D; }
+  .svc { display: grid; grid-template-columns: 1.2fr 2fr 1fr; gap: 12px 40px; padding: 30px 0; border-top: 1px solid #3A3936; align-items: baseline; }
+  .svc:last-child { border-bottom: 1px solid #3A3936; }
+  .svc h3 { font-family: var(--display); font-weight: 400; font-size: 30px; margin: 0; }
+  .svc p { margin: 0; color: #C8C5BC; }
+  .svc .rate { text-align: right; font-size: 18px; color: #E3C77F; font-variant-numeric: tabular-nums; }
+  .svc .rate small { display: block; color: #A9A69D; font-size: 13px; }
+  @media (max-width: 760px) { .svc { grid-template-columns: 1fr; } .svc .rate { text-align: left; } }
+
+  /* materials */
+  .swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; }
+  .sw { margin: 0; }
+  .sw .chip { aspect-ratio: 1; border-radius: 2px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
+  .sw figcaption { display: block; padding-top: 10px; }
+  .sw b { display: block; color: var(--ink); font-weight: 500; font-size: 16px; }
+  .kota { background: radial-gradient(circle at 30% 40%, #8A989A 0 18%, transparent 40%), radial-gradient(circle at 70% 70%, #5E6B6E 0 12%, transparent 38%), #73807F; }
+  .teak { background: repeating-linear-gradient(100deg, #7A4A2E 0 6px, #8B5A36 6px 9px, #6D4027 9px 16px, #85532F 16px 20px); }
+  .cane { background: repeating-linear-gradient(45deg, transparent 0 7px, #B98E57 7px 9px), repeating-linear-gradient(-45deg, transparent 0 7px, #B98E57 7px 9px), #E2C99D; }
+  .lime { background: radial-gradient(circle at 20% 30%, #EFE9DE, transparent 50%), radial-gradient(circle at 80% 60%, #D9D0C1, transparent 55%), #E5DDD0; }
+  .terrazzo { background: radial-gradient(circle at 18% 22%, #B8933A 0 4%, transparent 4.5%), radial-gradient(circle at 62% 30%, #8F9A84 0 6%, transparent 6.5%), radial-gradient(circle at 40% 70%, #7A4A2E 0 3.5%, transparent 4%), radial-gradient(circle at 80% 78%, #CFCBC2 0 7%, transparent 7.5%), radial-gradient(circle at 28% 52%, #5E6B6E 0 3%, transparent 3.5%), radial-gradient(circle at 75% 55%, #B8933A 0 2.5%, transparent 3%), #F1EEE8; }
+  @media (max-width: 760px) { .swatches { grid-template-columns: repeat(2, 1fr); } }
+
+  /* process */
+  .process ol { list-style: none; counter-reset: st; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(5, 1fr); border-top: 1px solid var(--ink); }
+  .process li { counter-increment: st; padding: 22px 20px 0 0; }
+  .process li::before { content: counter(st); font-family: var(--display); font-size: 46px; line-height: 1; color: var(--teak); display: block; margin-bottom: 14px; }
+  .process h3 { margin: 0 0 6px; font-size: 18px; font-weight: 600; }
+  .process p { margin: 0; color: var(--muted); font-size: 15px; }
+  .process .wk { display: block; margin-top: 10px; font-size: 13px; color: var(--teak); font-weight: 500; }
+  @media (max-width: 900px) { .process ol { grid-template-columns: 1fr 1fr; gap: 28px 20px; } }
+  @media (max-width: 520px) { .process ol { grid-template-columns: 1fr; } }
+
+  /* consultation */
+  .consult { background: var(--paper); }
+  .consult .wrap { display: grid; grid-template-columns: 1fr 1.3fr; gap: 64px; }
+  .consult h2 { font-family: var(--display); font-weight: 400; font-size: clamp(42px, 5vw, 64px); line-height: 1; margin: 0 0 20px; }
+  .consult .side p { color: var(--muted); }
+  .consult .side a { font-weight: 500; }
+  form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 24px; }
+  label { display: grid; gap: 6px; font-size: 13px; letter-spacing: .02em; color: var(--muted); }
+  .full { grid-column: 1 / -1; }
+  input, select { font: 17px var(--sans); color: var(--ink); background: transparent; border: 0; border-bottom: 1px solid var(--ink); padding: 8px 0 10px; border-radius: 0; width: 100%; }
+  input:focus, select:focus { outline: none; border-bottom: 2px solid var(--teak); }
+  .ok { display: none; grid-column: 1 / -1; border-left: 3px solid var(--teak); padding: 6px 0 6px 16px; }
+  .ok.on { display: block; }
+  @media (max-width: 860px) { .consult .wrap { grid-template-columns: 1fr; } }
+  @media (max-width: 520px) { form { grid-template-columns: 1fr; } }
+
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 30px; padding: 30px 0 44px; font-size: 14px; color: var(--muted); border-top: 1px solid var(--line); }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="word" href="#">Kona</a>
+    <span class="where">Interiors, Bandra West, Mumbai</span>
+    <nav aria-label="Main">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#process">Process</a>
+      <a href="#consult">Book a consultation</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" style="padding-top:56px">
+    <div class="wrap">
+      <div>
+        <h1>Homes designed around how you actually live.</h1>
+        <p>We design and build full homes in Mumbai, from the first site visit to the last cupboard handle. One team, one contract and one fixed estimate before work starts.</p>
+        <div class="cta"><a class="btn" href="#consult">Book a consultation</a><a class="btn ghost" href="#work">See our homes</a></div>
+      </div>
+      <figure>
+        <img src="https://images.unsplash.com/photo-1720247520862-7e4b14176fa8?w=1000&q=75" alt="Living room with a rust sofa, botanical wall panels and warm wood doors">
+        <figcaption><span>Andheri West apartment</span><span>3 BHK, 1,320 sq ft</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <div class="corner">
+    <div class="wrap">
+      <h2>Kona means corner.</h2>
+      <p>Every home has one corner that decides how the rest of it feels: the window seat, the puja nook, the spot where the morning chai happens. We find that corner on the first visit and design outwards from it.</p>
+    </div>
+  </div>
+
+  <section id="work">
+    <div class="wrap">
+      <div class="title">
+        <h2>Selected homes</h2>
+        <p>Four recent projects across Mumbai, each designed and built by our own team.</p>
+      </div>
+      <div class="projects">
+        <article class="proj p1">
+          <img src="https://images.unsplash.com/photo-1704040686413-2c607dbd2f06?w=1200&q=72" alt="Living room with a black marble partition and a low wooden coffee table" loading="lazy">
+          <h3>Juhu sea-facing flat</h3>
+          <dl><div><dt>Size</dt><dd>1,450 sq ft</dd></div><div><dt>Scope</dt><dd>Full home</dd></div><div><dt>Built in</dt><dd>14 weeks</dd></div></dl>
+        </article>
+        <article class="proj p2">
+          <img src="https://images.unsplash.com/photo-1663811397219-c572550dffc5?w=800&q=72" alt="Dark slatted TV wall with lit shelving" loading="lazy">
+          <h3>Worli penthouse den</h3>
+          <dl><div><dt>Size</dt><dd>480 sq ft</dd></div><div><dt>Scope</dt><dd>One room</dd></div><div><dt>Built in</dt><dd>6 weeks</dd></div></dl>
+        </article>
+        <article class="proj p3">
+          <img src="https://images.unsplash.com/photo-1705326701287-346fc37a2c86?w=800&q=72" alt="Soft beige living room with rounded sofa and armchairs" loading="lazy">
+          <h3>Bandra studio</h3>
+          <dl><div><dt>Size</dt><dd>620 sq ft</dd></div><div><dt>Scope</dt><dd>Full home</dd></div><div><dt>Built in</dt><dd>9 weeks</dd></div></dl>
+        </article>
+        <article class="proj p4">
+          <img src="https://images.unsplash.com/photo-1720247520881-672bc136da8a?w=1200&q=72" alt="Living room with a framed botanical panel and a stone TV wall" loading="lazy">
+          <h3>Powai family home</h3>
+          <dl><div><dt>Size</dt><dd>2,100 sq ft</dd></div><div><dt>Scope</dt><dd>Full home</dd></div><div><dt>Built in</dt><dd>18 weeks</dd></div></dl>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="services" id="services">
+    <div class="wrap">
+      <div class="title">
+        <h2>Services</h2>
+        <p>Rates are for Mumbai and Thane. GST is extra. Every project gets a written, itemised estimate before any work starts.</p>
+      </div>
+      <div class="svc"><h3>Full home</h3><p>Design, civil work, electrical, false ceiling, carpentry, painting and furnishing. We manage every trade and hand over a finished home.</p><div class="rate">from ₹2,200<small>per sq ft</small></div></div>
+      <div class="svc"><h3>Design only</h3><p>Layouts, 3D views, working drawings and a full material list. You hire your own contractor and we visit site twice a month.</p><div class="rate">₹180<small>per sq ft</small></div></div>
+      <div class="svc"><h3>Kitchen and wardrobes</h3><p>Modular kitchen and bedroom wardrobes with soft-close hardware and a ten-year warranty on the carcass.</p><div class="rate">from ₹2.4 lakh<small>per kitchen</small></div></div>
+      <div class="svc"><h3>Consultation</h3><p>Two hours at your home with a senior designer, and a written note of what to change and what it will cost.</p><div class="rate">₹5,000<small>adjusted if you go ahead</small></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="title">
+        <h2>What we build with</h2>
+        <p>Local materials that age well in Mumbai's humidity, chosen with you at our Bandra sample library.</p>
+      </div>
+      <div class="swatches">
+        <figure class="sw"><div class="chip kota"></div><figcaption><b>Kota stone</b>Floors and window sills</figcaption></figure>
+        <figure class="sw"><div class="chip teak"></div><figcaption><b>Teak veneer</b>Doors and wardrobes</figcaption></figure>
+        <figure class="sw"><div class="chip cane"></div><figcaption><b>Cane</b>Shutters and chairs</figcaption></figure>
+        <figure class="sw"><div class="chip lime"></div><figcaption><b>Lime plaster</b>Feature walls</figcaption></figure>
+        <figure class="sw"><div class="chip terrazzo"></div><figcaption><b>Terrazzo</b>Bathrooms and counters</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="process" id="process" style="padding-top:0">
+    <div class="wrap">
+      <div class="title">
+        <h2>How a project runs</h2>
+        <p>A 1,200 sq ft home usually takes 14 to 16 weeks from first visit to handover.</p>
+      </div>
+      <ol>
+        <li><h3>Site visit</h3><p>We measure, photograph and listen. You get a brief to approve.</p><span class="wk">Week 1</span></li>
+        <li><h3>Layouts and 3D</h3><p>Two layout options, then 3D views of every room.</p><span class="wk">Weeks 2 to 3</span></li>
+        <li><h3>Estimate</h3><p>An itemised estimate and a payment schedule tied to stages.</p><span class="wk">Week 4</span></li>
+        <li><h3>Build</h3><p>Weekly site photos and one visit with you every fortnight.</p><span class="wk">Weeks 5 to 14</span></li>
+        <li><h3>Handover</h3><p>Deep clean, snag list closed, and a folder of every warranty.</p><span class="wk">Final week</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="consult" id="consult">
+    <div class="wrap">
+      <div class="side">
+        <h2>Book a consultation</h2>
+        <p>Tell us about your home and a designer will call you within one working day to fix a visit.</p>
+        <p>Studio: 2nd floor, Pali Hill Road, Bandra West, Mumbai 400050<br>Open Monday to Saturday, 10 am to 7 pm</p>
+        <p><a href="mailto:studio@kona.example">studio@kona.example</a></p>
+      </div>
+      <form id="consult-form" novalidate>
+        <label for="c-name">Name<input id="c-name" name="name" autocomplete="name" required></label>
+        <label for="c-phone">Phone<input id="c-phone" name="phone" type="tel" autocomplete="tel" required></label>
+        <label for="c-area">Area of Mumbai<input id="c-area" name="area" placeholder="For example, Khar West"></label>
+        <label for="c-type">Home
+          <select id="c-type" name="type"><option>1 BHK</option><option selected>2 BHK</option><option>3 BHK</option><option>4 BHK or larger</option><option>Villa or bungalow</option></select>
+        </label>
+        <label for="c-scope">What you need
+          <select id="c-scope" name="scope"><option>Full home</option><option>Design only</option><option>Kitchen and wardrobes</option><option>One or two rooms</option></select>
+        </label>
+        <label for="c-when">Possession or start date
+          <select id="c-when" name="when"><option>Within a month</option><option>1 to 3 months</option><option>3 to 6 months</option><option>Just exploring</option></select>
+        </label>
+        <div class="full"><button class="btn" type="submit">Request a call</button></div>
+        <p class="ok" id="ok" role="status"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Kona Studio, Mumbai</span>
+    <span>Concept website designed and built by <a href="../../index.html">Akash Sharma</a>. Kona is a fictional studio.</span>
+  </div>
+</footer>
+
+<script>
+  const f = document.getElementById('consult-form'), ok = document.getElementById('ok');
+  f.addEventListener('submit', e => {
+    e.preventDefault();
+    ok.classList.add('on');
+    if (!f.name.value.trim() || f.phone.value.replace(/\D/g, '').length < 10) {
+      ok.textContent = 'Add your name and a phone number so a designer can call you.';
+      return;
+    }
+    ok.textContent = `Thank you, ${f.name.value.trim().split(' ')[0]}. A designer will call you within one working day about your ${f.type.value} (${f.scope.value.toLowerCase()}).`;
+  });
+</script>
+</body>
+</html>

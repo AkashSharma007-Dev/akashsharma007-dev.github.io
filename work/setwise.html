@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setwise, a workout log app | Akash Sharma</title>
+<meta name="description" content="Case study: Setwise, a concept strength-training app. User flow, wireframes, visual design and a clickable prototype by Akash Sharma.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/site.css">
+<link rel="stylesheet" href="../css/case.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="name" href="../index.html">Akash Sharma</a>
+    <nav aria-label="Main">
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#services">Services</a>
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <a class="btn btn-main" href="../index.html#contact">Start a project</a>
+  </div>
+</header>
+
+<main class="case">
+  <section class="case-hero">
+    <div class="wrap">
+      <a class="crumbs" href="../index.html#work">‹ All work</a>
+      <h1>Setwise</h1>
+      <p class="lede">A workout log for people who lift with a plan. It shows what to lift next, so the rest between sets goes on resting, not on scrolling back through old notes.</p>
+      <dl class="meta">
+        <div><dt>Project</dt><dd>Concept mobile app</dd></div>
+        <div><dt>Platform</dt><dd>iPhone and Android</dd></div>
+        <div><dt>My part</dt><dd>Flow, wireframes, visual design, prototype</dd></div>
+        <div><dt>Screens</dt><dd>5</dd></div>
+      </dl>
+      <div class="cta">
+        <a class="btn btn-main" href="../demos/setwise/" target="_blank" rel="noopener">Open the prototype</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="phones big" style="--tint:#DCE2E8">
+      <div class="phone"><img src="../img/setwise/s0.jpg" alt="Today screen with the push day plan" width="780" height="1688"></div>
+      <div class="phone"><img src="../img/setwise/s1.jpg" alt="Logging screen for bench press sets" width="780" height="1688"></div>
+      <div class="phone"><img src="../img/setwise/s3.jpg" alt="Progress screen with a bench press chart" width="780" height="1688"></div>
+    </div>
+  </div>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>The problem</h2>
+      <div class="text">
+        <p>People who train with a written plan add a little weight when they hit their reps. To do that they need three facts in the middle of a workout: what they lifted last time, what to try today, and how long until the next set.</p>
+        <p>Many keep this in a notes app or on paper. General fitness apps hide it behind feeds, badges and menus. Between sets there are about two minutes, the hands are sweaty and the phone is often lying on a bench.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>Who it's for</h2>
+      <div class="text">
+        <p>I designed for someone who trains three or four times a week from a plan, logs every set, and uses the phone with one hand between sets. These are my assumptions for the concept, not findings from research.</p>
+        <p>Three rules came from that:</p>
+        <ul>
+          <li>A set that matches the plan logs with one tap.</li>
+          <li>Every action during a workout sits within reach of the thumb.</li>
+          <li>Weights and reps can be read at arm's length.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>The flow</h2>
+      <div class="text">
+        <ol class="flow">
+          <li><span>Today's plan</span></li>
+          <li><span>Log a set</span></li>
+          <li><span>Rest timer</span></li>
+          <li><span>Finish</span></li>
+          <li><span>Summary</span></li>
+        </ol>
+        <p class="note" style="margin-top:16px">Steps 2 and 3 repeat for every set. Progress is one tap away from the tab bar at any time.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>Wireframes</h2>
+      <div class="text">
+        <p>Grey boxes first, to settle what each screen must show and in what order before choosing any colour.</p>
+      </div>
+      <div class="gallery full">
+        <figure><img src="../img/setwise/w0.jpg" alt="Wireframe of the Today screen" loading="lazy" width="390" height="844"><figcaption>Today</figcaption></figure>
+        <figure><img src="../img/setwise/w1.jpg" alt="Wireframe of the logging screen" loading="lazy" width="390" height="844"><figcaption>Logging a set</figcaption></figure>
+        <figure><img src="../img/setwise/w2.jpg" alt="Wireframe of the rest timer" loading="lazy" width="390" height="844"><figcaption>Rest timer</figcaption></figure>
+        <figure><img src="../img/setwise/w3.jpg" alt="Wireframe of the progress screen" loading="lazy" width="390" height="844"><figcaption>Progress</figcaption></figure>
+        <figure><img src="../img/setwise/w4.jpg" alt="Wireframe of the workout summary" loading="lazy" width="390" height="844"><figcaption>Workout done</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>Design decisions</h2>
+      <ol class="decisions full">
+        <li>
+          <div><h3>Last time sits next to this time</h3><p>Each set row shows the previous numbers beside the fields for today's. Nobody has to leave the screen to remember what they did.</p></div>
+          <div class="phone"><img src="../img/setwise/s1.jpg" alt="Set rows with a Last time column" loading="lazy" width="780" height="1688"></div>
+        </li>
+        <li class="mid">
+          <div><h3>The app does the sum, the lifter decides</h3><p>When every set of last week was completed, a hint suggests 2.5 kg more and fills it in with one tap. It never changes the plan on its own.</p></div>
+          <div class="crop"><img src="../img/setwise/d-hint.jpg" alt="Hint suggesting 72.5 kg, with a Use 72.5 button" loading="lazy" width="780" height="300"></div>
+        </li>
+        <li>
+          <div><h3>The rest timer stays in view</h3><p>After a set, a slim bar counts down at the bottom of the logging screen. Tapping it opens a large timer with buttons to add or take off 15 seconds.</p></div>
+          <div class="phone"><img src="../img/setwise/s2.jpg" alt="Rest timer at 1:24 of 2:00" loading="lazy" width="780" height="1688"></div>
+        </li>
+        <li>
+          <div><h3>Colours borrowed from the gym floor</h3><p>Exercises are marked in red, blue, yellow and green, the colours of standard weight plates. Lifters already know them, and they stay readable in a bright gym.</p></div>
+          <div class="phone"><img src="../img/setwise/s0.jpg" alt="Plan list with coloured markers" loading="lazy" width="780" height="1688"></div>
+        </li>
+        <li>
+          <div><h3>Progress as strength, not only volume</h3><p>The progress chart plots estimated one-rep max, which rises when either the weight or the reps go up. Records are listed under it with their dates.</p></div>
+          <div class="phone"><img src="../img/setwise/s3.jpg" alt="Estimated one-rep max chart" loading="lazy" width="780" height="1688"></div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>Final screens</h2>
+      <div class="gallery full">
+        <figure><img src="../img/setwise/s0.jpg" alt="Today screen" loading="lazy" width="780" height="1688"><figcaption>Today's plan with the week at a glance</figcaption></figure>
+        <figure><img src="../img/setwise/s1.jpg" alt="Logging screen" loading="lazy" width="780" height="1688"><figcaption>Logging sets, with last time beside each one</figcaption></figure>
+        <figure><img src="../img/setwise/s2.jpg" alt="Rest timer" loading="lazy" width="780" height="1688"><figcaption>Rest timer, opened from the bar</figcaption></figure>
+        <figure><img src="../img/setwise/s3.jpg" alt="Progress screen" loading="lazy" width="780" height="1688"><figcaption>Progress over three months</figcaption></figure>
+        <figure><img src="../img/setwise/s4.jpg" alt="Workout summary" loading="lazy" width="780" height="1688"><figcaption>Summary with new records</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>Design system</h2>
+      <div class="text" style="max-width:none">
+        <div class="swatches">
+          <div><i style="--c:#F1F3F5"></i><span>Chalk<small>#F1F3F5</small></span></div>
+          <div><i style="--c:#1B2430"></i><span>Iron<small>#1B2430</small></span></div>
+          <div><i style="--c:#1F5FBF"></i><span>Action blue<small>#1F5FBF</small></span></div>
+          <div><i style="--c:#D7263D"></i><span>Plate red<small>#D7263D</small></span></div>
+          <div><i style="--c:#F2C230"></i><span>Plate yellow<small>#F2C230</small></span></div>
+          <div><i style="--c:#2A9D5C"></i><span>Plate green<small>#2A9D5C</small></span></div>
+        </div>
+        <div class="typespec">
+          <div><small>Text</small><span>Barlow, 400 to 700. Plain and sturdy at small sizes.</span></div>
+          <div><small>Numbers</small><span>Barlow Semi Condensed. Narrow figures, so "72.5" fits a field sized for a thumb.</span></div>
+          <div><small>Components</small><span>Set row, number stepper, rest bar, record badge, tab bar.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>What I would test next</h2>
+      <div class="text">
+        <ol>
+          <li>Ask five people who lift to log a real session with the prototype on their own phone. Count taps per set and note every time they scroll back.</li>
+          <li>Check whether the suggestion to add weight feels helpful or pushy, against a version that only shows the hint without the button.</li>
+          <li>See whether the rest bar is noticed when the phone lies face down, and whether a vibration at zero is enough.</li>
+          <li>Find out whether people understand "estimated one-rep max" or would rather see their heaviest set.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <div class="next-case">
+    <div class="wrap">
+      <p class="disclaimer">Setwise is a concept project. The app, its users and all figures are fictional.</p>
+      <a href="godown.html">Next: Godown ›</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Akash Sharma</span>
+    <span>Gurugram, India</span>
+  </div>
+</footer>
+</body>
+</html>

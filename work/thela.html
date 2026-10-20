@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thela, a grocery checkout redesign | Akash Sharma</title>
+<meta name="description" content="Case study: a redesign of the cart and payment steps of Thela, a concept grocery delivery app. Audit, flow, wireframes, visual design and a clickable prototype by Akash Sharma.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/site.css">
+<link rel="stylesheet" href="../css/case.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="name" href="../index.html">Akash Sharma</a>
+    <nav aria-label="Main">
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#services">Services</a>
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <a class="btn btn-main" href="../index.html#contact">Start a project</a>
+  </div>
+</header>
+
+<main class="case">
+  <section class="case-hero">
+    <div class="wrap">
+      <a class="crumbs" href="../index.html#work">‹ All work</a>
+      <h1>Thela checkout</h1>
+      <p class="lede">A redesign of the cart and payment steps in a grocery delivery app, so the price in the cart is the price you pay.</p>
+      <dl class="meta">
+        <div><dt>Project</dt><dd>Concept redesign, mobile app</dd></div>
+        <div><dt>Platform</dt><dd>iPhone and Android</dd></div>
+        <div><dt>My part</dt><dd>Audit, flow, wireframes, visual design, prototype</dd></div>
+        <div><dt>Screens</dt><dd>2 before, 3 after</dd></div>
+      </dl>
+      <div class="cta">
+        <a class="btn btn-main" href="../demos/thela/" target="_blank" rel="noopener">Open the prototype</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="phones" style="--tint:#E0EFEE">
+      <figure><div class="phone"><img src="../img/thela/s0.jpg" alt="Old cart screen with five problems marked" width="780" height="1688"></div><figcaption>Before: cart</figcaption></figure>
+      <figure><div class="phone"><img src="../img/thela/s1.jpg" alt="Old payment screen with fees appearing for the first time" width="780" height="1688"></div><figcaption>Before: payment</figcaption></figure>
+      <span class="gap" aria-hidden="true"></span>
+      <figure><div class="phone"><img src="../img/thela/s2.jpg" alt="New cart screen with every fee shown" width="780" height="1688"></div><figcaption>After: cart</figcaption></figure>
+      <figure><div class="phone"><img src="../img/thela/s3.jpg" alt="New payment screen with UPI first" width="780" height="1688"></div><figcaption>After: payment</figcaption></figure>
+    </div>
+  </div>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>The problem</h2>
+      <div class="text">
+        <p>In the old flow the cart shows ₹486. One tap later the payment screen asks for ₹545. Four fees worth ₹59 appear for the first time just before paying, when it feels too late to change anything.</p>
+        <p>UPI, the way most people in India pay for everyday things online, sits under "More payment options", below cards, wallets and net banking.</p>
+        <p>Thela is fictional, and so are both "before" screens. I designed them to show a pattern that is common in delivery apps, so the redesign has something concrete to fix.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>What I found</h2>
+      <div class="text">
+        <p>The numbers match the red markers on the before screens.</p>
+        <ol class="issues">
+          <li>The coupon field is the first thing in the cart. It sends people away to hunt for codes.</li>
+          <li>A row of suggested snacks pushes the actual cart below the fold.</li>
+          <li>The cart total counts items only, with no hint that fees will be added.</li>
+          <li>Delivery, handling, late-night and platform fees, ₹59 in all, appear first on the payment screen.</li>
+          <li>UPI is hidden under "More payment options".</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>Who it's for</h2>
+      <div class="text">
+        <p>Someone topping up daily groceries, often late in the evening, with one hand, who wants the order fast and without surprises. This is my assumption for the concept, not a finding from research.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>The flow</h2>
+      <div class="text">
+        <ol class="flow">
+          <li><span>Cart with every fee</span></li>
+          <li><span>Choose payment</span></li>
+          <li><span>Pay by UPI</span></li>
+          <li><span>Order placed</span></li>
+        </ol>
+        <p class="note" style="margin-top:16px">The old flow had the same number of steps. The change is what each step tells you, and when.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>Wireframes</h2>
+      <div class="text">
+        <p>The new screens in grey, to get the order of information right: when it arrives, what is in it, what happens if something is missing, and what it all costs.</p>
+      </div>
+      <div class="gallery full" style="grid-template-columns:repeat(auto-fill,minmax(200px,240px))">
+        <figure><img src="../img/thela/w2.jpg" alt="Wireframe of the new cart" loading="lazy" width="390" height="844"><figcaption>Cart</figcaption></figure>
+        <figure><img src="../img/thela/w3.jpg" alt="Wireframe of the new payment screen" loading="lazy" width="390" height="844"><figcaption>Payment</figcaption></figure>
+        <figure><img src="../img/thela/w4.jpg" alt="Wireframe of the order placed screen" loading="lazy" width="390" height="844"><figcaption>Order placed</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>Design decisions</h2>
+      <ol class="decisions full">
+        <li>
+          <div><h3>Every fee in the cart, with its reason</h3><p>The fees did not go away. They moved to the cart, each with a short reason: the late-night fee says it applies between 11 pm and 6 am. The total under the button is now the amount that will be charged.</p></div>
+          <div class="phone"><img src="../img/thela/s2.jpg" alt="Cart with fees listed" loading="lazy" width="780" height="1688"></div>
+        </li>
+        <li class="mid">
+          <div><h3>An honest nudge instead of a snack row</h3><p>The upsell row is gone. In its place, a bar shows how close the order is to free delivery: ₹13 more. People add something they need instead of something placed in front of them.</p></div>
+          <div class="crop"><img src="../img/thela/d-free.jpg" alt="Free delivery progress bar: add ₹13 more" loading="lazy" width="780" height="170"></div>
+        </li>
+        <li class="mid">
+          <div><h3>Ask about missing items once, before paying</h3><p>A three-way choice in the cart: send a similar item, remove it, or call me. No surprise substitutions, and no call from the store at 11 pm.</p></div>
+          <div class="crop"><img src="../img/thela/d-stock.jpg" alt="Out of stock choice: send similar, remove it, or call me" loading="lazy" width="780" height="210"></div>
+        </li>
+        <li>
+          <div><h3>UPI first, and the same total</h3><p>The payment screen leads with UPI apps on the phone. Its title repeats the cart total, and a line under the options says no new charges were added. Cash on delivery reminds people to keep exact change.</p></div>
+          <div class="phone"><img src="../img/thela/s3.jpg" alt="Payment screen with UPI first" loading="lazy" width="780" height="1688"></div>
+        </li>
+        <li>
+          <div><h3>A confirmation that answers the next question</h3><p>After paying, the screen shows the arrival time, who is bringing the order, and the choices made in the cart, including what happens if something is out of stock.</p></div>
+          <div class="phone"><img src="../img/thela/s4.jpg" alt="Order placed screen" loading="lazy" width="780" height="1688"></div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>Design system</h2>
+      <div class="text" style="max-width:none">
+        <div class="swatches">
+          <div><i style="--c:#0B5D5E"></i><span>Thela teal<small>#0B5D5E</small></span></div>
+          <div><i style="--c:#FFB547"></i><span>Mango<small>#FFB547</small></span></div>
+          <div><i style="--c:#13201F"></i><span>Ink<small>#13201F</small></span></div>
+          <div><i style="--c:#F3F6F5"></i><span>Background<small>#F3F6F5</small></span></div>
+          <div><i style="--c:#E0EFEE"></i><span>Teal tint<small>#E0EFEE</small></span></div>
+        </div>
+        <div class="typespec">
+          <div><small>Type</small><span>Rubik, 400 to 700. Rounded and friendly, with clear rupee figures.</span></div>
+          <div><small>Components</small><span>Item row with stepper, fee line with reason, progress to free delivery, segmented choice, payment option, order tracker.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>What I would test next</h2>
+      <div class="text">
+        <ol>
+          <li>Run fees-in-cart against fees-at-payment and compare completed orders and complaints about charges, not only how many people tap Pay.</li>
+          <li>Check whether the free-delivery bar leads people to add useful items, or only adds pressure.</li>
+          <li>Try "Send similar" and "Call me" as the default and compare refunds and complaints.</li>
+          <li>Test UPI first with people who mostly pay cash on delivery, especially outside big cities.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <div class="next-case">
+    <div class="wrap">
+      <p class="disclaimer">Thela is a concept project. The app, its stores, riders and all figures are fictional.</p>
+      <a href="setwise.html">Next: Setwise ›</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Akash Sharma</span>
+    <span>Gurugram, India</span>
+  </div>
+</footer>
+</body>
+</html>

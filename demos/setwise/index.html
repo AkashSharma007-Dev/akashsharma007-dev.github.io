@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setwise prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Semi+Condensed:wght@600;700;800&family=Flow+Rounded&display=swap" rel="stylesheet">
+<style>
+  /* Setwise: a strength-training log. Data colours borrow from weight-plate colours (red 25, blue 20, yellow 15, green 10). */
+  :root {
+    --chalk: #F1F3F5;
+    --card: #FFFFFF;
+    --iron: #1B2430;
+    --soft: #5E6B7A;
+    --line: #DDE2E8;
+    --blue: #1F5FBF;
+    --blue-tint: #E3ECFA;
+    --red: #D7263D;
+    --yellow: #F2C230;
+    --green: #2A9D5C;
+    --green-tint: #DDF2E6;
+    --font: "Barlow", system-ui, sans-serif;
+    --num: "Barlow Semi Condensed", "Barlow", sans-serif;
+  }
+  .wire {
+    --chalk: #F4F4F4; --card: #FFFFFF; --iron: #555; --soft: #999; --line: #CCC;
+    --blue: #888; --blue-tint: #E6E6E6; --red: #999; --yellow: #BBB; --green: #888; --green-tint: #E6E6E6;
+  }
+  .wire .t { font-family: "Flow Rounded", var(--font); color: #BBB; }
+  .wire svg * { stroke: #AAA !important; fill-opacity: .25; }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.4 var(--font); color: var(--iron); background: #D9DEE4; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+
+  /* presentation shell */
+  .shell { min-height: 100vh; display: grid; grid-template-columns: 280px auto; justify-content: center; align-items: center; gap: 64px; padding: 40px 20px; }
+  .shell nav h1 { font: 800 30px/1 var(--num); margin: 0 0 6px; }
+  .shell nav p { color: var(--soft); margin: 0 0 22px; }
+  .shell nav ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+  .shell nav button { width: 100%; text-align: left; border: 0; background: transparent; padding: 10px 12px; border-radius: 10px; font-weight: 600; }
+  .shell nav button[aria-current="true"] { background: var(--iron); color: #fff; }
+  .shell nav .back { display: inline-block; margin-top: 24px; color: var(--soft); }
+  .device { width: 414px; padding: 12px; background: #111; border-radius: 56px; box-shadow: 0 40px 80px -30px rgba(0,0,0,.5); }
+  .device .viewport { width: 390px; height: 844px; border-radius: 46px; overflow: hidden; position: relative; }
+  @media (max-width: 760px) {
+    .shell { display: block; padding: 0; }
+    .shell nav { padding: 20px; }
+    .device { width: 100%; padding: 0; border-radius: 0; background: none; box-shadow: none; }
+    .device .viewport { width: 100%; border-radius: 0; }
+  }
+  body.shot { background: var(--chalk); }
+  body.shot .shell { display: block; padding: 0; min-height: 0; }
+  body.shot nav { display: none; }
+  body.shot .device { width: 390px; padding: 0; border-radius: 0; background: none; box-shadow: none; }
+  body.shot .viewport { border-radius: 0; }
+
+  /* app frame */
+  .screen { position: absolute; inset: 0; background: var(--chalk); display: none; flex-direction: column; }
+  .screen.on { display: flex; }
+  .sb { height: 47px; flex: none; display: flex; justify-content: space-between; align-items: center; padding: 6px 30px 0; font-weight: 700; font-size: 15px; }
+  .body { flex: 1; overflow: hidden; padding: 4px 18px 18px; display: flex; flex-direction: column; gap: 14px; }
+  .tabs { flex: none; height: 83px; background: var(--card); border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(4, 1fr); padding: 8px 6px 24px; text-align: center; font-size: 11px; font-weight: 600; color: var(--soft); }
+  .tabs button { border: 0; background: none; color: inherit; display: grid; justify-items: center; gap: 4px; }
+  .tabs svg { width: 24px; height: 24px; }
+  .tabs .on { color: var(--blue); }
+  .card { background: var(--card); border-radius: 18px; padding: 16px; }
+  .eyebrow { font-size: 13px; color: var(--soft); font-weight: 600; }
+  h2 { font: 800 32px/1 var(--num); margin: 2px 0 0; letter-spacing: -.01em; }
+  h3 { font: 700 18px/1.2 var(--font); margin: 0; }
+  .num { font-family: var(--num); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .btn { border: 0; border-radius: 16px; padding: 17px; font-weight: 700; font-size: 17px; width: 100%; }
+  .btn-blue { background: var(--blue); color: #fff; }
+  .btn-ghost { background: var(--card); color: var(--iron); border: 1px solid var(--line); }
+
+  /* S1 today */
+  .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; }
+  .week span { font-size: 12px; color: var(--soft); font-weight: 600; }
+  .week i { display: block; height: 34px; border-radius: 10px; background: var(--card); margin-top: 4px; display: grid; place-items: center; font-style: normal; font-weight: 700; font-size: 13px; }
+  .week i.done { background: var(--blue); color: #fff; }
+  .week i.today { outline: 2px solid var(--blue); outline-offset: -2px; }
+  .plan li { display: grid; grid-template-columns: 6px 1fr auto; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--line); }
+  .plan li:last-child { border: 0; }
+  .plan ul { list-style: none; padding: 0; margin: 8px 0 0; }
+  .plan b { font-weight: 600; }
+  .plan small { display: block; color: var(--soft); font-size: 13px; }
+  .bar { width: 6px; height: 34px; border-radius: 3px; }
+  .last { display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: var(--soft); }
+  .last b { color: var(--iron); }
+
+  /* S2 workout */
+  .top { display: flex; align-items: center; justify-content: space-between; }
+  .top .pill { background: var(--card); border-radius: 999px; padding: 7px 12px; font-weight: 700; font-size: 14px; }
+  .top .finish { border: 0; background: var(--green); color: #fff; border-radius: 999px; padding: 8px 14px; font-weight: 700; }
+  .hint { background: var(--blue-tint); border-radius: 14px; padding: 12px 14px; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; font-size: 14px; }
+  .hint button { border: 0; background: var(--blue); color: #fff; border-radius: 10px; padding: 8px 10px; font-weight: 700; font-size: 13px; white-space: nowrap; }
+  .sets { width: 100%; border-collapse: collapse; margin-top: 6px; }
+  .sets th { font-size: 12px; color: var(--soft); font-weight: 600; text-align: center; padding-bottom: 6px; }
+  .sets th:first-child, .sets td:first-child { text-align: left; }
+  .sets td { text-align: center; padding: 6px 0; }
+  .sets .prev { color: var(--soft); font-size: 13px; }
+  .box { display: inline-block; min-width: 58px; padding: 9px 6px; border-radius: 10px; background: var(--chalk); font-family: var(--num); font-weight: 700; font-size: 18px; }
+  .tick { width: 36px; height: 36px; border-radius: 10px; border: 2px solid var(--line); display: inline-grid; place-items: center; background: var(--card); }
+  tr.done .box { background: var(--green-tint); }
+  tr.done .tick { background: var(--green); border-color: var(--green); color: #fff; }
+  tr.active td { padding: 10px 0; }
+  tr.active .box { background: var(--card); outline: 2px solid var(--blue); font-size: 22px; }
+  .step { display: inline-flex; align-items: center; gap: 4px; }
+  .step button { width: 26px; height: 26px; border: 0; border-radius: 8px; background: var(--blue-tint); color: var(--blue); font-weight: 800; }
+  .next { display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+  .next small { color: var(--soft); display: block; }
+  .restbar { flex: none; margin: 0 18px 22px; background: var(--iron); color: #fff; border-radius: 18px; padding: 14px 16px; display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; border: 0; text-align: left; }
+  .restbar .ring { width: 38px; height: 38px; }
+  .restbar small { color: #AEB8C4; display: block; font-size: 12px; }
+  .restbar .num { font-size: 26px; }
+
+  /* S3 rest sheet */
+  .dim { position: absolute; inset: 0; background: rgba(27,36,48,.55); }
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--card); border-radius: 28px 28px 0 0; padding: 14px 22px 34px; display: grid; gap: 18px; justify-items: center; text-align: center; }
+  .grab { width: 40px; height: 5px; border-radius: 3px; background: var(--line); }
+  .big-ring { position: relative; width: 240px; height: 240px; }
+  .big-ring .lbl { position: absolute; inset: 0; display: grid; place-content: center; }
+  .big-ring .num { font-size: 64px; line-height: 1; }
+  .big-ring small { color: var(--soft); font-size: 14px; }
+  .adj { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 10px; width: 100%; }
+  .adj button { border: 1px solid var(--line); background: var(--chalk); border-radius: 14px; padding: 14px 0; font-weight: 700; font-size: 16px; }
+  .adj .skip { background: var(--iron); color: #fff; border-color: var(--iron); }
+  .upnext { width: 100%; display: flex; justify-content: space-between; background: var(--chalk); border-radius: 14px; padding: 12px 14px; font-size: 14px; }
+
+  /* S4 progress */
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--card); border-radius: 12px; padding: 4px; }
+  .seg button { border: 0; background: none; padding: 8px 0; border-radius: 9px; font-weight: 700; color: var(--soft); }
+  .seg .on { background: var(--iron); color: #fff; }
+  .kpi { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .kpi .card { padding: 14px; }
+  .kpi .num { font-size: 30px; display: block; line-height: 1.1; }
+  .kpi small { color: var(--soft); font-size: 13px; }
+  .up { color: var(--green); font-weight: 700; font-size: 13px; }
+  .pr { display: flex; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .pr:last-child { border: 0; }
+  .medal { width: 34px; height: 34px; border-radius: 50%; background: var(--yellow); display: grid; place-items: center; font-weight: 800; font-size: 13px; flex: none; }
+  .pr small { display: block; color: var(--soft); font-size: 13px; }
+
+  /* S5 summary */
+  .hero5 { background: var(--iron); color: #fff; border-radius: 22px; padding: 22px 18px; }
+  .hero5 .eyebrow { color: #AEB8C4; }
+  .hero5 h2 { font-size: 38px; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 18px; }
+  .stats div { background: rgba(255,255,255,.08); border-radius: 12px; padding: 10px 8px; }
+  .stats .num { font-size: 22px; display: block; }
+  .stats small { color: #AEB8C4; font-size: 12px; }
+  .newpr { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; }
+  .newpr .num { font-size: 22px; }
+  .ex { display: flex; justify-content: space-between; font-size: 14px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .ex:last-child { border: 0; }
+  .ex span { color: var(--soft); }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: auto; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav aria-label="Prototype screens">
+    <h1>Setwise</h1>
+    <p>Strength training log. Clickable prototype, 5 screens. A concept project: all names and figures are fictional.</p>
+    <ol id="list"></ol>
+    <a class="back" href="../../work/setwise.html">Read the case study</a>
+  </nav>
+  <div class="device"><div class="viewport" id="vp">
+
+    <!-- S1 Today -->
+    <section class="screen" data-name="Today">
+      <div class="sb"><span>7:41</span><span>●●● 5G</span></div>
+      <div class="body">
+        <div><div class="eyebrow">Tuesday, 20 October</div><h2>Push day</h2></div>
+        <div class="week">
+          <div><span>M</span><i class="done">✓</i></div><div><span>T</span><i class="today">20</i></div><div><span>W</span><i></i></div><div><span>T</span><i></i></div><div><span>F</span><i></i></div><div><span>S</span><i></i></div><div><span>S</span><i></i></div>
+        </div>
+        <div class="card plan">
+          <div class="last"><h3>Today's plan</h3><span>About 55 min</span></div>
+          <ul>
+            <li><span class="bar" style="background:var(--red)"></span><div><b>Bench press</b><small class="t">4 sets of 6, start at 72.5 kg</small></div><span class="num">4×6</span></li>
+            <li><span class="bar" style="background:var(--blue)"></span><div><b>Overhead press</b><small class="t">3 sets of 8 at 42.5 kg</small></div><span class="num">3×8</span></li>
+            <li><span class="bar" style="background:var(--yellow)"></span><div><b>Incline dumbbell press</b><small class="t">3 sets of 10 at 22 kg each</small></div><span class="num">3×10</span></li>
+            <li><span class="bar" style="background:var(--green)"></span><div><b>Triceps pushdown</b><small class="t">3 sets of 12 at 25 kg</small></div><span class="num">3×12</span></li>
+          </ul>
+        </div>
+        <div class="card last"><span class="t">Last push day, 6 days ago</span><b class="num">6,520 kg lifted</b></div>
+        <button class="btn btn-blue" data-go="1" style="margin-top:auto">Start workout</button>
+      </div>
+      <div class="tabs">
+        <button class="on" data-go="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11 12 4l8 7v9H4z"/></svg>Today</button>
+        <button data-go="3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19 10 12l4 3 6-8"/></svg>Progress</button>
+        <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>History</button>
+        <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>You</button>
+      </div>
+    </section>
+
+    <!-- S2 Workout -->
+    <section class="screen" data-name="Logging a set">
+      <div class="sb"><span>8:02</span><span>●●● 5G</span></div>
+      <div class="body">
+        <div class="top"><button class="pill" data-go="0" style="border:0">‹ Push day</button><span class="pill num">18:42</span><button class="finish" data-go="4">Finish</button></div>
+        <div class="card">
+          <div class="last"><h3>Bench press</h3><span class="t">Exercise 1 of 4</span></div>
+          <div class="hint" style="margin-top:12px"><span class="t">You hit 70 kg × 6 on every set last week. Try 72.5 kg today.</span><button>Use 72.5</button></div>
+          <table class="sets">
+            <thead><tr><th>Set</th><th>Last time</th><th>kg</th><th>Reps</th><th></th></tr></thead>
+            <tbody>
+              <tr class="done"><td class="num">1</td><td class="prev">70 × 6</td><td><span class="box">72.5</span></td><td><span class="box">6</span></td><td><span class="tick">✓</span></td></tr>
+              <tr class="done"><td class="num">2</td><td class="prev">70 × 6</td><td><span class="box">72.5</span></td><td><span class="box">6</span></td><td><span class="tick">✓</span></td></tr>
+              <tr class="active"><td class="num">3</td><td class="prev">70 × 6</td><td><span class="step"><button aria-label="Less weight">−</button><span class="box">72.5</span></span></td><td><span class="step"><span class="box">6</span><button aria-label="More reps">+</button></span></td><td><span class="tick"></span></td></tr>
+              <tr><td class="num">4</td><td class="prev">70 × 6</td><td><span class="box">72.5</span></td><td><span class="box">6</span></td><td><span class="tick"></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card next"><div><small>Next</small><b>Overhead press</b></div><span class="num">3×8 at 42.5 kg</span></div>
+      </div>
+      <button class="restbar" data-go="2">
+        <svg class="ring" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="#3A4757" stroke-width="5"/><circle cx="20" cy="20" r="16" fill="none" stroke="#F2C230" stroke-width="5" stroke-dasharray="100.5" stroke-dashoffset="30" transform="rotate(-90 20 20)" stroke-linecap="round"/></svg>
+        <span><small>Resting before set 3</small>Tap to open timer</span>
+        <span class="num">1:24</span>
+      </button>
+    </section>
+
+    <!-- S3 Rest timer -->
+    <section class="screen" data-name="Rest timer">
+      <div class="sb"><span>8:02</span><span>●●● 5G</span></div>
+      <div class="body" style="opacity:.5">
+        <div class="top"><span class="pill">‹ Push day</span><span class="pill num">18:42</span><span class="finish">Finish</span></div>
+        <div class="card" style="height:300px"></div>
+      </div>
+      <div class="dim"></div>
+      <div class="sheet">
+        <span class="grab"></span>
+        <div class="eyebrow">Rest before set 3</div>
+        <div class="big-ring">
+          <svg viewBox="0 0 240 240"><circle cx="120" cy="120" r="104" fill="none" stroke="var(--chalk)" stroke-width="18"/><circle cx="120" cy="120" r="104" fill="none" stroke="var(--yellow)" stroke-width="18" stroke-linecap="round" stroke-dasharray="653.5" stroke-dashoffset="196" transform="rotate(-90 120 120)"/></svg>
+          <div class="lbl"><span class="num">1:24</span><small>of 2:00</small></div>
+        </div>
+        <div class="adj"><button>−15s</button><button>+15s</button><button class="skip" data-go="1">Skip rest</button></div>
+        <div class="upnext"><span>Up next</span><b class="num">Set 3, 72.5 kg × 6</b></div>
+      </div>
+    </section>
+
+    <!-- S4 Progress -->
+    <section class="screen" data-name="Progress">
+      <div class="sb"><span>9:15</span><span>●●● 5G</span></div>
+      <div class="body">
+        <div><div class="eyebrow">Progress</div><h2>Bench press</h2></div>
+        <div class="seg"><button>1M</button><button class="on">3M</button><button>1Y</button></div>
+        <div class="card">
+          <div class="last"><span class="t">Estimated one-rep max</span><span class="up">+10 kg in 12 weeks</span></div>
+          <svg viewBox="0 0 320 170" style="width:100%;margin-top:8px">
+            <g stroke="var(--line)" stroke-width="1"><line x1="28" y1="20" x2="316" y2="20"/><line x1="28" y1="70" x2="316" y2="70"/><line x1="28" y1="120" x2="316" y2="120"/></g>
+            <g font-size="11" fill="var(--soft)" font-family="Barlow"><text x="0" y="24">90</text><text x="0" y="74">82</text><text x="0" y="124">74</text><text x="28" y="160">Jul</text><text x="150" y="160">Aug</text><text x="270" y="160">Oct</text></g>
+            <path d="M28 117 L52 113 L76 109 L100 110 L124 102 L148 98 L172 95 L196 89 L220 86 L244 80 L268 76 L292 70 L316 64 L316 140 L28 140Z" fill="var(--blue-tint)"/>
+            <path d="M28 117 L52 113 L76 109 L100 110 L124 102 L148 98 L172 95 L196 89 L220 86 L244 80 L268 76 L292 70 L316 64" fill="none" stroke="var(--blue)" stroke-width="3" stroke-linejoin="round"/>
+            <circle cx="316" cy="64" r="6" fill="var(--blue)" stroke="#fff" stroke-width="3"/>
+          </svg>
+        </div>
+        <div class="kpi">
+          <div class="card"><span class="num">87 kg</span><small>Best one-rep max</small></div>
+          <div class="card"><span class="num">24</span><small>Sessions in 3 months</small></div>
+        </div>
+        <div class="card">
+          <h3 style="margin-bottom:4px">Personal records</h3>
+          <div class="pr"><span class="medal">PR</span><div><b>75 kg × 5</b><small class="t">Heaviest set, 29 September</small></div></div>
+          <div class="pr"><span class="medal">PR</span><div><b>1,680 kg</b><small class="t">Most volume in one session, 14 October</small></div></div>
+        </div>
+      </div>
+      <div class="tabs">
+        <button data-go="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11 12 4l8 7v9H4z"/></svg>Today</button>
+        <button class="on" data-go="3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19 10 12l4 3 6-8"/></svg>Progress</button>
+        <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>History</button>
+        <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>You</button>
+      </div>
+    </section>
+
+    <!-- S5 Summary -->
+    <section class="screen" data-name="Workout done">
+      <div class="sb"><span>8:36</span><span>●●● 5G</span></div>
+      <div class="body">
+        <div class="hero5">
+          <div class="eyebrow">Tuesday, 20 October</div>
+          <h2>Push day done</h2>
+          <div class="stats">
+            <div><span class="num">52</span><small>minutes</small></div>
+            <div><span class="num">6,840</span><small>kg lifted</small></div>
+            <div><span class="num">13</span><small>sets</small></div>
+            <div><span class="num">2</span><small>records</small></div>
+          </div>
+        </div>
+        <div class="card newpr"><span class="medal">PR</span><div><b>Bench press</b><div class="t" style="color:var(--soft);font-size:13px">New estimated one-rep max</div></div><span class="num">87 kg</span></div>
+        <div class="card newpr"><span class="medal">PR</span><div><b>Overhead press</b><div class="t" style="color:var(--soft);font-size:13px">Heaviest set, 42.5 kg × 8</div></div><span class="num">+2.5</span></div>
+        <div class="card">
+          <div class="ex"><b>Bench press</b><span class="num">4 × 6 at 72.5 kg</span></div>
+          <div class="ex"><b>Overhead press</b><span class="num">3 × 8 at 42.5 kg</span></div>
+          <div class="ex"><b>Incline dumbbell press</b><span class="num">3 × 10 at 22 kg</span></div>
+          <div class="ex"><b>Triceps pushdown</b><span class="num">3 × 12 at 25 kg</span></div>
+        </div>
+        <div class="row2"><button class="btn btn-ghost">Share</button><button class="btn btn-blue" data-go="0">Done</button></div>
+      </div>
+    </section>
+
+  </div></div>
+</div>
+<script src="../proto.js"></script>
+</body>
+</html>
